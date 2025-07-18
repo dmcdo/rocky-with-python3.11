@@ -30,6 +30,7 @@ RUN microdnf install -y \
     bzip2-devel \
     libffi-devel \
     sqlite \
+    sqlite-devel \
     tk-devel \
     xz-devel \
     && microdnf clean all
