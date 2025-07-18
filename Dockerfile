@@ -1,13 +1,17 @@
-FROM rockylinux:8-minimal
+ARG BASE_IMAGE=rockylinux:8-minimal
+FROM ${BASE_IMAGE}
+
+# Package manager.
+RUN if [ -e /usr/bin/microdnf ]; then ln -sf /usr/bin/microdnf /usr/bin/dnf; fi
 
 
 # Build latest OpenSSL LTS.
-ENV OPENSSL_VERSION=3.0.17
+ENV OPENSSL_VERSION=3.5.1
 ENV OPENSSL_PREFIX=/usr/local/openssl
 
-RUN microdnf update -y \
-    && microdnf install -y gcc make perl wget tar git perl-core zlib-devel \
-    && microdnf clean all
+RUN dnf update -y \
+    && dnf install -y gcc make perl wget tar git perl-core zlib-devel \
+    && dnf clean all
 
 RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
@@ -26,14 +30,14 @@ ENV PYTHON3_VERSION=3.11.13
 ENV PYTHON_PREFIX=/opt/python/${PYTHON3_VERSION}
 ENV PYTHON_BIN=${PYTHON_PREFIX}/bin
 
-RUN microdnf install -y \
+RUN dnf install -y \
     bzip2-devel \
     libffi-devel \
     sqlite \
     sqlite-devel \
     tk-devel \
     xz-devel \
-    && microdnf clean all
+    && dnf clean all
 
 RUN cd /tmp && \
     wget https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz && \
