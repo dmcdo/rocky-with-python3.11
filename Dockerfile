@@ -25,6 +25,34 @@ ENV PATH="${OPENSSL_PREFIX}/bin:$PATH"
 ENV LD_LIBRARY_PATH="${OPENSSL_PREFIX}/lib64"
 
 
+# Build Tk/Tcl 8.6
+ENV TCLTK_PREFIX=/opt/tcltk
+
+RUN microdnf install -y \
+    libX11-devel \
+    libXext-devel \
+    libXrender-devel \
+    && microdnf clean all
+RUN mkdir -p /tmp/tkbuild && cd /tmp/tkbuild && \
+    wget -q http://downloads.sourceforge.net/tcl/tcl8.6.16-src.tar.gz && \
+    wget -q http://downloads.sourceforge.net/tcl/tk8.6.16-src.tar.gz && \
+    tar xzf tcl8.6.16-src.tar.gz && \
+    tar xzf tk8.6.16-src.tar.gz
+RUN cd /tmp/tkbuild/tcl8.6.16/unix && \
+    ./configure --prefix=${TCLTK_PREFIX} && \
+    make -j$(nproc) && \
+    make install
+RUN cd /tmp/tkbuild/tk8.6.16/unix && \
+    ./configure --prefix=${TCLTK_PREFIX} --with-tcl=${TCLTK_PREFIX}/lib && \
+    make -j$(nproc) && \
+    make install
+
+ENV CPPFLAGS="-I${TCLTK_PREFIX}/include -I${TCLTK_PREFIX}/include/tcl8.6 -I${OPENSSL_PREFIX}/include"
+ENV LDFLAGS="-L${TCLTK_PREFIX}/lib -L${OPENSSL_PREFIX}/lib64"
+ENV LD_LIBRARY_PATH="${TCLTK_PREFIX}/lib:${OPENSSL_PREFIX}/lib64"
+ENV PKG_CONFIG_PATH="${TCLTK_PREFIX}/lib/pkgconfig"
+
+
 # Build latest Python 3.11
 ENV PYTHON3_VERSION=3.11.13
 ENV PYTHON_PREFIX=/opt/python/${PYTHON3_VERSION}
@@ -35,7 +63,6 @@ RUN dnf install -y \
     libffi-devel \
     sqlite \
     sqlite-devel \
-    tk-devel \
     xz-devel \
     && dnf clean all
 

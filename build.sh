@@ -9,7 +9,6 @@ docker build \
     -t damrrc/rocky-with-python3.11:latest .
 docker build \
     --build-arg BASE_IMAGE=fedora:42 \
-    --build-arg DNF=dnf \
     -t damrrc/fedora-with-python3.11:latest .
 
 # Upload docker images.
