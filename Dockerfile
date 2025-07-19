@@ -1,17 +1,14 @@
 ARG BASE_IMAGE=rockylinux:8-minimal
 FROM ${BASE_IMAGE}
 
-# Package manager.
-RUN if [ -e /usr/bin/microdnf ]; then ln -sf /usr/bin/microdnf /usr/bin/dnf; fi
-
 
 # Build latest OpenSSL LTS.
 ENV OPENSSL_VERSION=3.5.1
 ENV OPENSSL_PREFIX=/usr/local/openssl
 
-RUN dnf update -y \
-    && dnf install -y gcc make perl wget tar git perl-core zlib-devel \
-    && dnf clean all
+RUN microdnf update -y \
+    && microdnf install -y gcc make perl wget tar git perl-core zlib-devel \
+    && microdnf clean all
 
 RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
@@ -32,6 +29,9 @@ RUN microdnf install -y \
     libX11-devel \
     libXext-devel \
     libXrender-devel \
+    fontconfig-devel \
+    freetype-devel \
+    libXft-devel \
     && microdnf clean all
 RUN mkdir -p /tmp/tkbuild && cd /tmp/tkbuild && \
     wget -q http://downloads.sourceforge.net/tcl/tcl8.6.16-src.tar.gz && \
@@ -58,13 +58,13 @@ ENV PYTHON3_VERSION=3.11.13
 ENV PYTHON_PREFIX=/opt/python/${PYTHON3_VERSION}
 ENV PYTHON_BIN=${PYTHON_PREFIX}/bin
 
-RUN dnf install -y \
+RUN microdnf install -y \
     bzip2-devel \
     libffi-devel \
     sqlite \
     sqlite-devel \
     xz-devel \
-    && dnf clean all
+    && microdnf clean all
 
 RUN cd /tmp && \
     wget https://www.python.org/ftp/python/${PYTHON3_VERSION}/Python-${PYTHON3_VERSION}.tgz && \
