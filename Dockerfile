@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE}
 
 
 # Build latest OpenSSL LTS.
-ENV OPENSSL_VERSION=3.5.1
+ENV OPENSSL_VERSION=3.5.3
 ENV OPENSSL_PREFIX=/usr/local/openssl
 
 RUN microdnf update -y \
@@ -34,15 +34,15 @@ RUN microdnf install -y \
     libXft-devel \
     && microdnf clean all
 RUN mkdir -p /tmp/tkbuild && cd /tmp/tkbuild && \
-    wget -q http://downloads.sourceforge.net/tcl/tcl8.6.16-src.tar.gz && \
-    wget -q http://downloads.sourceforge.net/tcl/tk8.6.16-src.tar.gz && \
-    tar xzf tcl8.6.16-src.tar.gz && \
-    tar xzf tk8.6.16-src.tar.gz
-RUN cd /tmp/tkbuild/tcl8.6.16/unix && \
+    wget -q http://downloads.sourceforge.net/tcl/tcl8.6.17-src.tar.gz && \
+    wget -q http://downloads.sourceforge.net/tcl/tk8.6.17-src.tar.gz && \
+    tar xzf tcl8.6.17-src.tar.gz && \
+    tar xzf tk8.6.17-src.tar.gz
+RUN cd /tmp/tkbuild/tcl8.6.17/unix && \
     ./configure --prefix=${TCLTK_PREFIX} && \
     make -j$(nproc) && \
     make install
-RUN cd /tmp/tkbuild/tk8.6.16/unix && \
+RUN cd /tmp/tkbuild/tk8.6.17/unix && \
     ./configure --prefix=${TCLTK_PREFIX} --with-tcl=${TCLTK_PREFIX}/lib && \
     make -j$(nproc) && \
     make install
