@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE}
 
 
 # Build latest OpenSSL LTS.
-ENV OPENSSL_VERSION=3.5.3
+ENV OPENSSL_VERSION=3.5.4
 ENV OPENSSL_PREFIX=/usr/local/openssl
 
 RUN microdnf update -y \
@@ -54,7 +54,7 @@ ENV PKG_CONFIG_PATH="${TCLTK_PREFIX}/lib/pkgconfig"
 
 
 # Build latest Python 3.11
-ENV PYTHON3_VERSION=3.11.13
+ENV PYTHON3_VERSION=3.11.14
 ENV PYTHON_PREFIX=/opt/python/${PYTHON3_VERSION}
 ENV PYTHON_BIN=${PYTHON_PREFIX}/bin
 
